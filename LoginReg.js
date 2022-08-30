@@ -44,7 +44,7 @@ LoginRegRouter.post("/login", async function (req, res, next) {
           },
           process.env.JWT_TOKEN_SECRET,
           {
-            expiresIn: 60 * 30,
+            expiresIn: 6000 * 30,
           }
         );
         res.cookie("cookieName:ismayel", "1", {
@@ -55,6 +55,7 @@ LoginRegRouter.post("/login", async function (req, res, next) {
           Success: true,
           access_token: token,
           message: "Login successfully",
+          email: req.body.email,
         });
       } else {
         res.status(200).json({

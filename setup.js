@@ -10,9 +10,11 @@ const DBQuery = async function db_query(query) {
   }
   try {
     let result = await connection.execute(query);
+    // console.log(result);
     return result.rows;
   } catch (errors) {
     console.log("Query not executed");
+    return errors;
   }
 };
 

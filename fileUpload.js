@@ -19,28 +19,28 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({
-  limits: { fileSize: 6000000 },
-  fileFilter: (req, file, cb) => {
-    if (file.fieldname == "img") {
-      if (
-        file.mimetype == "image/jpeg" ||
-        file.mimetype == "image/png" ||
-        file.mimetype == "image/jpg"
-      ) {
-        cb(null, true);
-      } else {
-        cb(new Error("only jpg,png,jpeg format are available"));
-      }
-    } else if (file.fieldname == "pdf") {
-      if (file.mimetype == "application/pdf") {
-        cb(null, true);
-      } else {
-        cb(new Error("only pdf are available"));
-      }
-    } else {
-      cb(new Error("unknown error"));
-    }
-  },
+  // limits: { fileSize: 6000000 },
+  // fileFilter: (req, file, cb) => {
+  //   if (file.fieldname == "img") {
+  //     if (
+  //       file.mimetype == "image/jpeg" ||
+  //       file.mimetype == "image/png" ||
+  //       file.mimetype == "image/jpg"
+  //     ) {
+  //       cb(null, true);
+  //     } else {
+  //       cb(new Error("only jpg,png,jpeg format are available"));
+  //     }
+  //   } else if (file.fieldname == "pdf") {
+  //     if (file.mimetype == "application/pdf") {
+  //       cb(null, true);
+  //     } else {
+  //       cb(new Error("only pdf are available"));
+  //     }
+  //   } else {
+  //     cb(new Error("unknown error"));
+  //   }
+  // },
   storage: storage,
 });
 
@@ -52,6 +52,7 @@ FileUploadRoute.post(
   ]),
   async function (req, res, next) {
     // console.log(req.files);
+    console.log(req.body);
     console.log(req.body.name);
     console.log(req.body.email);
     console.log(req.files.pdf[0].filename);

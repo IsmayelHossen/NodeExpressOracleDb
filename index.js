@@ -1,33 +1,46 @@
 const morgan = require("morgan");
 const express = require("express");
+var bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 const DBQuery = require("./setup");
 const Vendor_create_router = require("./VendorCreateRoute");
 const FileUploadRoute = require("./fileUpload");
 const LoginRegRouter = require("./LoginReg");
 const VendorProductRoute = require("./VendorProductRoute");
+const VendorDetailsfileRoute = require("./VendorDetailsRoute");
 const mailRoute = require("./MailsendRoute");
 const router = express.Router({});
 const oracledb = require("oracledb");
 const cors = require("cors");
-const cookieParser = require("cookie-parser");
+const dns = require("dns");
+
 const FileUploadRoute_2 = require("./FileUpload2");
 oracledb.autoCommit = true;
 oracledb.outFormat = oracledb.OBJECT;
 const path = require("path");
 var nodemailer = require("nodemailer");
+const exp = require("constants");
 const app = express();
 dotenv.config();
+
+// for parsing application/json
+// app.use(bodyParser.json());
+
+// // for parsing application/xwww-
+// app.use(bodyParser.urlencoded({ extended: true }));
+//form-urlencoded
 app.use(express.json());
 app.use(cors());
 app.options("*", cors());
 app.use(morgan("dev"));
 app.use(router);
+const hostname = "localhost";
 // app.use(express.static(__dirname + "uploads"));
 // app.use(cookieParser());
 app.use(express.static("public"));
 
 app.use("/vendor", Vendor_create_router);
+app.use("/vendor_file/", VendorDetailsfileRoute);
 app.use("/file2", FileUploadRoute_2);
 app.use("/file", FileUploadRoute);
 app.use("/product", VendorProductRoute);
@@ -57,13 +70,13 @@ app.use((err, req, res, next) => {
     res.send("success");
   }
 });
-// replace(/ /g, "")
-// str = "01552152883 ismayel@mail.com";
-// let replace = str.replace(/[^\w\@.]/gi, "");
+
+// str = "01552152883 &%$#@*&^ismayel@mail.com";
+// let replace = str.replace(/[^\w\@]/gi, "");
 // let match = str.match(/^(\+)?01[35-9]\d{8}/gi);
 // let search = str.search(/^[01]]/gi);
 // let abc = "hello bd fgg";
-// console.log(match[0]);
+// console.log(replace);
 
 // let array = [
 //   {
@@ -111,5 +124,5 @@ app.use((err, req, res, next) => {
 // console.log(path.join(__dirname, "public"));
 
 app.listen(process.env.PORT, () => {
-  console.log("server");
+  console.log(`Server running at http://:${process.env.PORT}/`);
 });
