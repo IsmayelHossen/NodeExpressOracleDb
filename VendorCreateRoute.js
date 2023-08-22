@@ -3,7 +3,7 @@ const RouteCheckUsingJWT = require("./RouteCheckUsingJwt");
 const DBQuery = require("./setup");
 const fs = require("fs");
 const Vendor_create_router = express.Router();
-
+const jwt = require("jsonwebtoken");
 //route for vendor management main
 Vendor_create_router.get(
   "/Vendor_data",
@@ -11,14 +11,14 @@ Vendor_create_router.get(
   async function (req, res, next) {
     console.log("from authenticate jwt token" + req.name + req.Email);
 
-    console.log(req.originalUrl);
+    console.log(req.headers.authorization);
     const query1 = "select*from vendor_create";
     const params = [];
 
     // const result1 = await db_query(query1, params);
     const result1 = await DBQuery(query1);
     // const result1 = await db_query(query1, params);
-
+    console.log(req.hostname);
     res.status(200).append("name", "ismayel").json(result1);
   }
 );
@@ -27,7 +27,9 @@ Vendor_create_router.get(
   "/Vendor_data1",
   RouteCheckUsingJWT,
   async function (req, res, next) {
+    console.log(req.hostname);
     console.log(req.headers.email + req.headers.name);
+    console.log(req.headers.authorization);
     const query1 = "select*from vendor_info";
     const params = [];
 
@@ -41,6 +43,7 @@ Vendor_create_router.get(
 // vendor specific data get for update
 Vendor_create_router.get(`/Vendor_data/:id`, async function (req, res, next) {
   console.log("hello");
+  console.log(req.headers.authorization);
   const query1 = `select*from vendor_create where id=${req.params.id}`;
   //const params = [];
   const result1 = await DBQuery(query1);
@@ -78,19 +81,7 @@ Vendor_create_router.get("/createTable", async function (req, res, next) {
 Vendor_create_router.post("/add_vendor", async function (req, res, next) {
   console.log(req.body);
   console.log(req.headers.name);
-  // console.log(req);
-  // const CompanyName = req.body.CompanyName;
-  // const ContactName = req.body.ContactName;
-  // const ContactTitle = req.body.ContactTitle;
-  // const Address = req.body.Address;
-  // const Street = req.body.Street;
-  // const Pcode = req.body.Pcode;
-  // const City = req.body.City;
-  // const Country = req.body.Country;
-  // const Mobile = req.body.Mobile;
-  // const Fax = req.body.Fax;
-  // const Website = req.body.Website;
-  // const Email = req.body.Email;
+  console.log(req.get("content-type"));
   const agreement_type = req.body.agreement_type;
   const category_type = req.body.category_type;
   const procurement_type = req.body.procurement_type;
@@ -132,6 +123,7 @@ Vendor_create_router.put("/vendor/update/:id", async function (req, res) {
 Vendor_create_router.post("/add_vendor/details", async function (req, res) {
   console.log(req.body);
   console.log(req.headers.vendor_id);
+
   const vendor_id = req.body.vendor_id;
   const memo_no = req.body.memo_no;
   const date = req.body.date;
@@ -164,7 +156,13 @@ Vendor_create_router.post("/add_vendor/details", async function (req, res) {
 //get vendor details
 Vendor_create_router.get("/Vendor_details", async function (req, res) {
   console.log(req.headers.vendor_id);
+  // const token = req.headers.authorization.split(" ")[1];
+  // const decoded = jwt.verify(token, process.env.JWT_TOKEN_SECRET);
+  // const { name, Email } = decoded;
+  // console.log(name + Email);
+  console.log(req.socket.remoteAddress);
   const vendor_id = req.headers.vendor_id;
+  console.log(req);
   // const query = `SELECT VENDOR_DETAILS.*,MULTIFILE.* FROM VENDOR_DETAILS  JOIN MULTIFILE on  VENDOR_DETAILS.ID=MULTIFILE.VENDORDETAILS_ID WHERE VENDOR_DETAILS.VENDOR_ID=${vendor_id}`;
   const query = `SELECT*FROM VENDOR_DETAILS WHERE VENDOR_ID=${vendor_id} `;
   const result = await DBQuery(query);
@@ -230,8 +228,9 @@ Vendor_create_router.delete(
     console.log(req.params.delete);
     const query = `delete from vendor_info where ID=${req.params.delete}`;
     const result = await DBQuery(query);
-    console.log(result.errorNum);
-    if (result.errorNum == 2292) {
+    console.log(result);
+
+    if (result != undefined && result.errorNum == 2292) {
       res.status(200).json({
         success: false,
       });
@@ -264,9 +263,7 @@ Vendor_create_router.delete(
 );
 //vendor branch
 Vendor_create_router.post("/branch/add", async function (req, res) {
-  const branch_name = req.body.branch_name;
-  const address = req.body.address;
-  const vendor_id = req.body.vendor_id;
+  const { branch_name, address, vendor_id } = req.body;
   console.log(req.body);
   query = `INSERT INTO VENDOR_BRANCH(VENDOR_ID,BRANCH_NAME,ADDRESS)
      VALUES('${vendor_id}','${branch_name}','${address}')`;

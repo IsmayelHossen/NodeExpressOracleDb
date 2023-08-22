@@ -13,13 +13,14 @@ const router = express.Router({});
 const oracledb = require("oracledb");
 const cors = require("cors");
 const dns = require("dns");
-
+var cookieParser = require("cookie-parser");
 const FileUploadRoute_2 = require("./FileUpload2");
 oracledb.autoCommit = true;
 oracledb.outFormat = oracledb.OBJECT;
 const path = require("path");
 var nodemailer = require("nodemailer");
 const exp = require("constants");
+const RouteCheckUsingJWT = require("./RouteCheckUsingJwt");
 const app = express();
 dotenv.config();
 
@@ -30,6 +31,9 @@ dotenv.config();
 // app.use(bodyParser.urlencoded({ extended: true }));
 //form-urlencoded
 app.use(express.json());
+
+// app.use(express.urlencoded({ extended: true }));
+
 app.use(cors());
 app.options("*", cors());
 app.use(morgan("dev"));
@@ -38,9 +42,13 @@ const hostname = "localhost";
 // app.use(express.static(__dirname + "uploads"));
 // app.use(cookieParser());
 app.use(express.static("public"));
-
-app.use("/vendor", Vendor_create_router);
-app.use("/vendor_file/", VendorDetailsfileRoute);
+app.use(cookieParser());
+// app.all("*", (req, res, next) => {
+//   console.log("root");
+//   next();
+// });
+app.use("/vendor", RouteCheckUsingJWT, Vendor_create_router);
+app.use("/vendor_file/", RouteCheckUsingJWT, VendorDetailsfileRoute);
 app.use("/file2", FileUploadRoute_2);
 app.use("/file", FileUploadRoute);
 app.use("/product", VendorProductRoute);

@@ -47,16 +47,23 @@ LoginRegRouter.post("/login", async function (req, res, next) {
             expiresIn: 6000 * 30,
           }
         );
-        res.cookie("cookieName:ismayel", "1", {
-          expires: new Date(Date.now() + 900000),
-          httpOnly: true,
-        });
-        res.status(200).json({
-          Success: true,
-          access_token: token,
-          message: "Login successfully",
-          email: req.body.email,
-        });
+        res
+          .status(201)
+          // .cookie("access_token", "Bearer " + 778, {
+          //   expires: new Date(Date.now() + 8 * 3600000), // cookie will be removed after 8 hours
+          // })
+          .json({
+            Success: true,
+            access_token: token,
+            message: "Login successfully",
+            email: req.body.email,
+          });
+        // res.status(200).json({
+        //   Success: true,
+        //   access_token: token,
+        //   message: "Login successfully",
+        //   email: req.body.email,
+        // });
       } else {
         res.status(200).json({
           Success1: true,

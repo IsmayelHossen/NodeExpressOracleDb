@@ -97,8 +97,9 @@ VendorDetailsfileRoute.post(
       if (req.files.pdf.length > 0) {
         for (let i = 0; i < req.files.pdf.length; i++) {
           console.log(req.files.pdf[i]);
-          const querypdf = `INSERT INTO  MULTIFILE(CATEGORY,FILENAME,VENDORDETAILS_ID,FILESIZE) 
-            VALUES('contract','${req.files.pdf[i].filename}','${result2[0].ID}','${req.files.pdf[i].size}')
+          const time_date = new Date().toLocaleString();
+          const querypdf = `INSERT INTO  MULTIFILE(CATEGORY,FILENAME,VENDORDETAILS_ID,FILESIZE,TIMEDATE) 
+            VALUES('contract','${req.files.pdf[i].filename}','${result2[0].ID}','${req.files.pdf[i].size}','${time_date}')
               `;
           const result = await DBQuery(querypdf);
         }
@@ -106,8 +107,10 @@ VendorDetailsfileRoute.post(
       if (req.files.img.length > 0) {
         for (let i = 0; i < req.files.img.length; i++) {
           console.log(req.files.img[i].filename);
-          const queryimg = `INSERT INTO  MULTIFILE(CATEGORY,FILENAME,VENDORDETAILS_ID,FILESIZE) 
-            VALUES('noa','${req.files.img[i].filename}','${result2[0].ID}','${req.files.img[i].size}')
+          console.log(req.files.pdf[i]);
+          const time_date = new Date().toLocaleString();
+          const queryimg = `INSERT INTO  MULTIFILE(CATEGORY,FILENAME,VENDORDETAILS_ID,FILESIZE,TIMEDATE) 
+            VALUES('noa','${req.files.img[i].filename}','${result2[0].ID}','${req.files.img[i].size}','${time_date}')
               `;
           const result = await DBQuery(queryimg);
         }

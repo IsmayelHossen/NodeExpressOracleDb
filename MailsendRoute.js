@@ -4,10 +4,10 @@ const mailRoute = express.Router();
 
 mailRoute.get("/send", (req, res, next) => {
   var transporter = nodemailer.createTransport({
-    // service: "gmail",
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
+    service: "gmail",
+    // host: "smtp.gmail.com",
+    // port: 465,
+    // secure: true,
 
     auth: {
       user: process.env.MAIL_USERNAME,
@@ -18,10 +18,9 @@ mailRoute.get("/send", (req, res, next) => {
   var mailOptions = {
     from: "ismayel <ismayelhossen125@gmail.com>",
     to: "ismayelhossen123@gmail.com",
-    cc: "ismayelhossen125@gmail.com",
     subject: "Message title",
     text: "Plaintext version of the message",
-    html: "<p>o</p>",
+    html: "<h2 style='color:red'>Verification Code:1234</h2>",
   };
 
   transporter.sendMail(mailOptions, function (error, info) {
